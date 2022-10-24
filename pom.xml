@@ -15,6 +15,7 @@
     <description>kiweys-blog-backend</description>
     <properties>
         <java.version>17</java.version>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -64,6 +65,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>kiweys-blog-backend</finalName>
     </build>
 
 </project>
