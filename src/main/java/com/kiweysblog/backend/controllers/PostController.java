@@ -2,6 +2,7 @@ package com.kiweysblog.backend.controllers;
 
 import com.kiweysblog.backend.payload.ApiResponse;
 import com.kiweysblog.backend.payload.PostDto;
+import com.kiweysblog.backend.payload.PostResponse;
 import com.kiweysblog.backend.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,11 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    @PostMapping("/author/{authorId}/category/{categoryId}")
+    @PostMapping("/")
     public ResponseEntity<PostDto> createPost(
             @RequestBody PostDto postDto,
-            @PathVariable Integer authorId,
-            @PathVariable Integer categoryId
+            @RequestParam(required = true) Integer authorId,
+            @RequestParam(required = true) Integer categoryId
         ){
             PostDto createdPost = this.postService.createPost(postDto, authorId, categoryId);
             return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
@@ -36,9 +37,12 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/")
-    public ResponseEntity<List<PostDto>> getAllPosts(){
-        List<PostDto> posts = this.postService.getAllPost();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+    public ResponseEntity<PostResponse> getPosts(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+        ){
+            PostResponse posts = this.postService.getPosts(page, size);
+            return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/{postId}")
     public ResponseEntity<PostDto> getPostsById(@PathVariable Integer postId){

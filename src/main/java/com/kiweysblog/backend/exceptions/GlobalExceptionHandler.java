@@ -2,10 +2,12 @@ package com.kiweysblog.backend.exceptions;
 
 
 import com.kiweysblog.backend.payload.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,16 +21,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
         String message = ex.getMessage();
         ApiResponse response = new ApiResponse(message, false);
-        return new ResponseEntity<ApiResponse>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String >> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception){
+    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception){
         Map<String, String> response = new HashMap<>();
         exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError)error).getField();
             String message = error.getDefaultMessage();
             response.put(fieldName, message);
         });
-        return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException exception){
+        String cause = String.valueOf(exception.getCause().getCause());
+        String attribute = cause.contains("email") ? "E-Mail" :
+                cause.contains("username") ? "Username":"";
+        ApiResponse response = new ApiResponse(attribute + " already exists.", false);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse> missingRequestParameterExceptionHandler(MissingServletRequestParameterException exception){
+        String message = exception.getMessage();
+        ApiResponse response = new ApiResponse(message, false);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

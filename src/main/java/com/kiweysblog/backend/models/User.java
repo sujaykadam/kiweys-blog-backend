@@ -22,9 +22,9 @@ public class User {
     private String firstName;
     @Column(name = "last_name", nullable = false, length = 25)
     private String lastName;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
     private String password;

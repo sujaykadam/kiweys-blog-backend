@@ -5,12 +5,16 @@ import com.kiweysblog.backend.models.Category;
 import com.kiweysblog.backend.models.Post;
 import com.kiweysblog.backend.models.User;
 import com.kiweysblog.backend.payload.PostDto;
+import com.kiweysblog.backend.payload.PostResponse;
 import com.kiweysblog.backend.repositories.CategoryRepo;
 import com.kiweysblog.backend.repositories.PostRepo;
 import com.kiweysblog.backend.repositories.UserRepo;
 import com.kiweysblog.backend.services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -73,9 +77,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPost() {
-        List<Post> posts = this.postRepo.findAll();
-        return posts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+    public PostResponse getPosts(Integer page, Integer size) {
+        Pageable p = PageRequest.of(page, size);
+        Page<Post> pagePosts = this.postRepo.findAll(p);
+        List<Post> posts = pagePosts.getContent();
+        List<PostDto> postDtos = posts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        PostResponse response = new PostResponse();
+        response.setContent(postDtos);
+        response.setPage(pagePosts.getNumber());
+        response.setSize(pagePosts.getSize());
+        response.setTotalPages(pagePosts.getTotalPages());
+        response.setTotalElements(pagePosts.getTotalElements());
+        response.setLast(pagePosts.isLast());
+
+        return response;
     }
 
     @Override
