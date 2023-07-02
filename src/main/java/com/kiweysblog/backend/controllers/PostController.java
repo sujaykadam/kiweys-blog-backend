@@ -17,11 +17,11 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<PostDto> createPost(
             @RequestBody PostDto postDto,
-            @RequestParam(required = true) Integer authorId,
-            @RequestParam(required = true) Integer categoryId
+            @RequestParam Integer authorId,
+            @RequestParam Integer categoryId
         ){
             PostDto createdPost = this.postService.createPost(postDto, authorId, categoryId);
             return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
@@ -36,12 +36,14 @@ public class PostController {
         List<PostDto> posts = this.postService.getPostsByCategory(categoryId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<PostResponse> getPosts(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "createdDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String orderBy
         ){
-            PostResponse posts = this.postService.getPosts(page, size);
+            PostResponse posts = this.postService.getPosts(page, size, sortBy, orderBy);
             return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/{postId}")
