@@ -1,5 +1,6 @@
 package com.kiweysblog.backend.controllers;
 
+import com.kiweysblog.backend.config.AppConstants;
 import com.kiweysblog.backend.payload.ApiResponse;
 import com.kiweysblog.backend.payload.PostDto;
 import com.kiweysblog.backend.payload.PostResponse;
@@ -38,10 +39,10 @@ public class PostController {
     }
     @GetMapping("")
     public ResponseEntity<PostResponse> getPosts(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "createdDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String orderBy
+            @RequestParam(defaultValue = AppConstants.PAGE) Integer page,
+            @RequestParam(defaultValue = AppConstants.SIZE) Integer size,
+            @RequestParam(defaultValue = AppConstants.SORT_POSTS_BY) String sortBy,
+            @RequestParam(defaultValue = AppConstants.ORDER_POSTS_BY) String orderBy
         ){
             PostResponse posts = this.postService.getPosts(page, size, sortBy, orderBy);
             return new ResponseEntity<>(posts, HttpStatus.OK);
@@ -53,7 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<PostDto>> searchPostByTitle(@RequestParam(defaultValue = "") String keyWord){
+    public ResponseEntity<List<PostDto>> searchPostByTitle(@RequestParam(defaultValue = AppConstants.DEFAULT_BLANK_STRING) String keyWord){
         List<PostDto> searchedPosts = this.postService.searchPost(keyWord);
         return new ResponseEntity<>(searchedPosts, HttpStatus.OK);
     }
