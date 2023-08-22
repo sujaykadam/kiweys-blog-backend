@@ -35,3 +35,6 @@ build/
 ### local env variables ###
 .env
 .DS_Store
+
+### local images folder ###
+/images
