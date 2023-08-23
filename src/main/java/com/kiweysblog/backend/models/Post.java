@@ -32,6 +32,6 @@ public class Post {
     private Category category;
     @ManyToOne
     private User author;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<>();
 }
