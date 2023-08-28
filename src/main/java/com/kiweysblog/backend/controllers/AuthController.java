@@ -1,5 +1,6 @@
 package com.kiweysblog.backend.controllers;
 
+import com.kiweysblog.backend.exceptions.ApiException;
 import com.kiweysblog.backend.payload.JwtAuthRequest;
 import com.kiweysblog.backend.payload.JwtAuthResponse;
 import com.kiweysblog.backend.security.JwtTokenHelper;
@@ -8,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +43,7 @@ public class AuthController {
             this.authenticationManager.authenticate(token);
         } catch (BadCredentialsException exception){
             System.out.println("Invalid Credentials");
-            throw new Exception("Invalid Credentials");
+            throw new ApiException("Invalid Credentials");
         }
     }
 }
